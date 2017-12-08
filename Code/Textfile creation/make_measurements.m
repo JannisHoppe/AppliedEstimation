@@ -17,7 +17,7 @@ for i = 1:1:length(true_path(:,1))
         end
         theta(j) = atan2(true_path(i,2)-map(j,3),map(j,2)-true_path(i,1))-true_path(i,3);
         theta(j) = mod(theta(j)+pi,2*pi)-pi+((2*sigma_Q(2))*rand(1)- sigma_Q(2))*disturb_measurements;            
-   %     theta_(j) = theta(j)*360/(2*pi)
+   %     theta_(j) = theta(j)*360/(2*piadsasda
     end
     
     for j =1:1:number_landmarks

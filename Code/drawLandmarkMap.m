@@ -8,8 +8,7 @@ if nargin < 1
     return
 end
 
-if strcmp(filename,'C:\Users\hoppe\Desktop\KTH\Applied Estimation\Project\Dataset\Textfiles\MapStanford.txt')
-    imshow('reference.jpg');
+if strcmp(filename,'C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\AppliedEstimation\Dataset\Textfiles\MapStanford.txt')
     hold on;
 end
 

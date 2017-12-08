@@ -10,7 +10,7 @@ end
 help = 1;
 %% Loading the map file
 tic;
-dataset_base = 'C:\Users\hoppe\Desktop\KTH\Applied Estimation\Project\Dataset\Textfiles\';
+dataset_base = 'C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\AppliedEstimation\Dataset\Textfiles';
 d = load([dataset_base mapfile]);
 
 bound = [min(d(:,2)) max(d(:,2)) min(d(:,3)) max(d(:,3))];

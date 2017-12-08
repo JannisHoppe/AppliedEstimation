@@ -34,7 +34,7 @@ if outliers
 end
 S_bar = weight(S_bar,Psi,outlier);
 
-RESAMPLE_MODE = 1; 
+RESAMPLE_MODE = 2; 
 %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
 switch RESAMPLE_MODE
     case 0

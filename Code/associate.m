@@ -30,7 +30,7 @@ for i = 1:1:n
     % problems in this lab I decided to do it like this anyways.
     psi_ij(:,j) = 1/((2*pi)*(det(Q)^0.5))*exp(-0.5*(nu_ij(1,:).^2/Q(1)+ nu_ij(2,:).^2*Q(4)^-1));    
     end
-    [psi,c] = max(psi_ij,[],2);    
+    [psi,c] = max(psi_ij,[],2);   
     outlier(1,i) = (1/M*sum(psi) <= Lambda_psi);
     Psi(1,i,:) = psi(:);
 end

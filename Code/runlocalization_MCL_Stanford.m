@@ -10,7 +10,7 @@ end
 help = 1;
 %% Loading the map file
 tic;
-dataset_base = 'C:\Users\hoppe\Desktop\KTH\Applied Estimation\Project\Dataset\Textfiles\';
+dataset_base = 'C:\Users\hoppe\Desktop\KTH\Applied Estimation\test\Dataset\Textfiles\';
 d = load([dataset_base mapfile]);
 
 bound = [min(d(:,2)) max(d(:,2)) min(d(:,3)) max(d(:,3))];
@@ -26,11 +26,11 @@ if verbose
     fige = figure(1); % Estimated Movement and Map
     clf(fige);
     
-    margin = 10;
-    xmin = min(d(:,2)) - margin;
-    xmax = max(d(:,2)) + margin;
-    ymin = min(d(:,3)) - margin;
-    ymax = max(d(:,3)) + margin;
+    margin = 0;
+    xmin = 0 - margin;
+    xmax = 1424 + margin;
+    ymin = 0 - margin;
+    ymax = 1088 + margin;
    
     figure(fige);
     drawLandmarkMap([dataset_base mapfile]);

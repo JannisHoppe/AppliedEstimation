@@ -9,7 +9,6 @@ if nargin < 1
 end
 
 if strcmp(filename,'C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\AppliedEstimation\Dataset\Textfiles\MapStanford.txt')
-    imshow('reference.jpg');
     hold on;
 end
 

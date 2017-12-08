@@ -1,11 +1,7 @@
-function [ true_path ] = make_true_path(filepath)
+function [ true_path ] = make_true_path()
 %MAKE_TRUE_PATH Summary of this function goes here
 %   Detailed explanation goes here
-if nargin <1
-    filepath = 'C:\Users\hoppe\Desktop\KTH\Applied Estimation\test\Dataset\Textfiles\';
-end
-openpath = [filepath 'robot_path.txt'];
-d = load([openpath]);
+d = load('robot_path.txt');
 
 true_path(:,1:2) = d(:,2:3);
 true_path(:,2) = 1088- true_path(:,2);

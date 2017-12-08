@@ -9,15 +9,18 @@ help =1 ;
 for i = 1:1:length(true_path(:,1))
     for j = 1:1:number_landmarks
         
-        dist(j) = sqrt((true_path(i,1)-map(j,2))^2+(true_path(i,2)-map(j,3))^2) + ((2*sigma_Q(1))*rand(1)- sigma_Q(1))*disturb_measurements;
+        dist_(j) = sqrt((true_path(i,1)-map(j,2))^2+(true_path(i,2)-map(j,3))^2)
+        dist(j) = sqrt((true_path(i,1)-map(j,2))^2+(true_path(i,2)-map(j,3))^2) + (2*sigma_Q(1))*rand(1)*disturb_measurements
         if dist(j) > sensor_max_distance
             flag(j) = 0;
         else
             flag(j) = j;
         end
         theta(j) = atan2(true_path(i,2)-map(j,3),map(j,2)-true_path(i,1))-true_path(i,3);
-        theta(j) = mod(theta(j)+pi,2*pi)-pi+((2*sigma_Q(2))*rand(1)- sigma_Q(2))*disturb_measurements;            
-   %     theta_(j) = theta(j)*360/(2*pi)
+        theta(j) = mod(theta(j)+pi,2*pi)-pi;
+        theta_(j) = theta(j)*360/(2*pi)
+        theta(j) = mod(theta(j)+pi,2*pi)-pi+(2*sigma_Q(2)- sigma_Q(2))*rand(1)*disturb_measurements;            
+        theta_(j) = theta(j)*360/(2*pi)
     end
     
     for j =1:1:number_landmarks

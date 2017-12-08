@@ -20,7 +20,7 @@ clear all
 %%%%%%%%%%%%%%%%%%
 
 thisfig = figure();
-obj = VideoReader('newVideo.mp4');
+obj = VideoReader('C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\own\video\newVideo.mp4');
 endframe= obj.Duration*obj.FrameRate-1;
 
 for k = 1 : endframe  %fill in the appropriate number

@@ -10,7 +10,7 @@ end
 help = 1;
 %% Loading the map file
 tic;
-dataset_base = 'C:\Users\hoppe\Desktop\KTH\Applied Estimation\test\Dataset\Textfiles\';
+dataset_base = 'C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\AppliedEstimation\Dataset\Textfiles\';
 d = load([dataset_base mapfile]);
 
 bound = [min(d(:,2)) max(d(:,2)) min(d(:,3)) max(d(:,3))];
@@ -26,19 +26,20 @@ if verbose
     fige = figure(1); % Estimated Movement and Map
     clf(fige);
     
-    margin = 0;
-    xmin = 0 - margin;
-    xmax = 1424 + margin;
-    ymin = 0 - margin;
-    ymax = 1088 + margin;
+    margin = 10;
+    xmin = min(d(:,2)) - margin;
+    xmax = max(d(:,2)) + margin;
+    ymin = min(d(:,3)) - margin;
+    ymax = max(d(:,3)) + margin;
    
     figure(fige);
     drawLandmarkMap([dataset_base mapfile]);
     hold on;
     title('Estimated Map and Movement');
     parts_handle = plot(0,0,'b.','erasemode','xor');
+    axis([xmin xmax ymin ymax]);
 end
-landmarks = load([dataset_base mapfile]);
+landmarks = load(filename);
 hcovs = [];
 if verbose > 1
     figure(fige);
@@ -85,16 +86,17 @@ plot_save_groundtruth_x = [];
 plot_save_groundtruth_y = [];
 
 %%read in video file
-obj = VideoReader('C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\own\video\newVideo.mp4');
+obj = VideoReader('newVideo.mp4');
 endframe= obj.Duration*obj.FrameRate-1;
 load('C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\project\AppliedEstimation\Code\Textfile creation\time_vec.mat');
+thisfig = figure();
 
 %%
 % Main loop
 for v=1:endframe
     this_frame = readFrame(obj);
     time = obj.CurrentTime;
-    if (abs(time-t_vec(count+1))<= 10*eps)
+    if (abs(time-time_vec(count+1))<= 10*eps)
         count = count + 1;
         if count > length(flines)
             break;
@@ -138,35 +140,42 @@ for v=1:endframe
         end
         plot_save_estimation_x = [plot_save_estimation_x mu(1)];
         plot_save_estimation_y = [plot_save_estimation_y mu(2)];
-        plot_save_groundtruth_x = [plot_save_groundtruth_x truepose(1)];
-        plot_save_groundtruth_y = [plot_save_groundtruth_y truepose(2)];
+        plot_save_groundtruth_x = [truepose()]
+        if n > 0 && show_estimate && verbose > 0
+            if verbose > 1
+                plot(mu(1), mu(2), 'rx')
+            end
+            set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
+            if verbose > 1
+                pcov= make_covariance_ellipses(mu,sigma);
+                set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
+            end  
+        end        
+        if n > 0 && show_gth&& verbose > 0
+            plot(truepose(1), truepose(2), 'gx');
+        end  
 
     end
-    clf(fige)
-    thisax = axes('Parent', fige);
-    image(this_frame, 'Parent', thisax);
+    clf(thisfig)
     hold on;
+    imshow(this_frame);
     plot(landmarks(:,2), landmarks(:,3), 'ko');
-    
     if n > 0 && show_estimate && verbose > 0
-        if verbose > 1
-            %plot(mu(1), mu(2), 'rx')
-            plot(plot_save_estimation_x,plot_save_estimation_y,'rx');
-        end
-        parts_handle = plot(0,0,'b.','erasemode','xor');
-        set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
-        if verbose > 1
-            figure(fige);
-            hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);
-            pcov= make_covariance_ellipses(mu,sigma);
-            set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
+            if verbose > 1
+                plot(mu(1), mu(2), 'rx')
+            end
+            set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
+            if verbose > 1
+                pcov= make_covariance_ellipses(mu,sigma);
+                set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
+            end  
+        end        
+        if n > 0 && show_gth&& verbose > 0
+            plot(truepose(1), truepose(2), 'gx');
         end  
-    end        
-    if n > 0 && show_gth&& verbose > 0
-        %plot(truepose(1), truepose(2), 'gx');
-        plot(plot_save_groundtruth_x,plot_save_groundtruth_y,'gx');
-    end  
-    title(sprintf('t= %d, total outliers=%d, current outliers=%d',time,total_outliers,outliers));
+    plot(plot_save_estimation_x,plot_save_estimation_y,'rx');
+    plot(plot_save_groundtruth_x,plot_save_groundtruth_y,'gx');
+    title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
     
     drawnow
     help = help +1;

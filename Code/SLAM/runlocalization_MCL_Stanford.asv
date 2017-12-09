@@ -44,7 +44,7 @@ end
 
 %%
 % Parameter Initialization
-[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE] = init(bound,start_pose,Map_IDS(end));
+[S,R,Q,Lambda_psi] = init(bound,start_pose,Map_IDS(end));
 %%
 % Code initialization
 % clc;

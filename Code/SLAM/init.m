@@ -6,21 +6,25 @@
 %			Q:				2X2
 %           Lambda_psi:     1X1
 %           start_pose:     3X1
-function [S,R,Q,Lambda_psi] = init(bound,start_pose)
-M = 10000;
+function [S,R,Q,Lambda_psi] = init(bound,start_pose,number_landmarks)
+M = 1000;
 if ~isempty(start_pose)
-    S = [repmat(start_pose,1,M); 1/M*ones(1,M)];
+    S_x = [repmat(start_pose,1,M); 1/M*ones(1,M)];
 else
-    S = [rand(1,M)*(bound(2) - bound(1)) + bound(1);
+    S_x = [rand(1,M)*(bound(2) - bound(1)) + bound(1);
          rand(1,M)*(bound(4) - bound(3)) + bound(3);
          rand(1,M)*2*pi-pi;
          1/M*ones(1,M)];
 end
-   % plot(S(1,:),S(2,:),'rx')
-% Below here you may want to experiment with the values but these seem to work for most datasets.
+
+Landmark_init = [0;-1;-1;-1;-1];
+S_M = repmat(Landmark_init,number_landmarks,M);
+S = [S_x;S_M];
 
 R = diag([4 4 5*2*pi/360]); %process noise covariance matrix
 Q = diag([25;10*2*pi/360]); % measurement noise covariance matrix
 Lambda_psi = 0.0000001;
+USE_KNOWN_ASSOCIATIONS = 1;
+RESAMPLE_MODE = 2; %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
 
 end

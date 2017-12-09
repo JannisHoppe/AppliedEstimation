@@ -257,6 +257,7 @@ while 1
     
     drawnow
     help = help +1;
+    varianz_theta(count) = var(S(3,:));
 end   
     
 end

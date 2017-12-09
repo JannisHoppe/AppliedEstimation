@@ -7,7 +7,7 @@
 %           Lambda_psi:     1X1
 %           start_pose:     3X1
 function [S,R,Q,Lambda_psi] = init(bound,start_pose)
-M = 1000;
+M = 10000;
 if ~isempty(start_pose)
     S = [repmat(start_pose,1,M); 1/M*ones(1,M)];
 else
@@ -19,8 +19,8 @@ end
    % plot(S(1,:),S(2,:),'rx')
 % Below here you may want to experiment with the values but these seem to work for most datasets.
 
-R = diag([4 4 10*2*pi/360]); %process noise covariance matrix
-Q = diag([15;0.15]); % measurement noise covariance matrix
-Lambda_psi = 0;
+R = diag([4 4 5*2*pi/360]); %process noise covariance matrix
+Q = diag([25;10*2*pi/360]); % measurement noise covariance matrix
+Lambda_psi = 0.0000001;
 
 end

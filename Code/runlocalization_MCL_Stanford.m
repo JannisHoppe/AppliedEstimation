@@ -9,7 +9,7 @@ help = 1;
 tic;
 d = load(mapfile);
 
-bound = [min(d(:,2)) max(d(:,2)) min(d(:,3)) max(d(:,3))];
+bound = [0 1424 0 1088];
 %%
 % Parameter Initialization
 [S,R,Q,Lambda_psi] = init(bound,start_pose);

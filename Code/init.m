@@ -21,6 +21,6 @@ end
 
 R = diag([4 4 10*2*pi/360]); %process noise covariance matrix
 Q = diag([15;0.15]); % measurement noise covariance matrix
-Lambda_psi = 0.0001;
+Lambda_psi = 0;
 
 end

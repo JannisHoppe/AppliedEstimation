@@ -65,7 +65,7 @@ errpose = [];
 count = 0;
 gth = [];
 total_outliers = 0;
-t = 0;
+t = -1/3 +0.1001;
 sigma = cov(S(1,:),S(2,:));
 var_theta = var(S(3,:));
 s_sigma = zeros(3,3);
@@ -229,7 +229,7 @@ while 1
         set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
         he = [];  
         if verbose > 1
-            pcov= make_covariance_ellipses(mu,sigma);
+            pcov= abs(make_covariance_ellipses(mu,sigma));
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
         end
         title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));

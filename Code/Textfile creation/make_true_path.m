@@ -10,7 +10,6 @@ for i = 1:1:length(true_path(:,1))-1
 true_path(i,3) = atan2((true_path(i+1,2)-true_path(i,2)),(true_path(i+1,1)-true_path(i,1)));
 true_path(i,3) = mod(true_path(i,3)+pi,2*pi)-pi;
 end
-true_path(i+1,3) = true_path(i,3);
 
 
 

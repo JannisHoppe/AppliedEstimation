@@ -6,7 +6,7 @@ measurements = cell(540,3);
 number_landmarks = map(end,1);
 number_landmarkss = zeros(540,1) ;
 
-for i = 1:1:length(true_path(:,1))
+for i = 2:1:length(true_path(:,1))
     for j = 1:1:number_landmarks
         
         %uniformly distributed error
@@ -29,10 +29,11 @@ for i = 1:1:length(true_path(:,1))
     
     for j =1:1:number_landmarks
         if flag(j) ~= 0
-        number_landmarkss(i) = number_landmarkss(i)+1;
-        measurements{i,1} = [measurements{i,1} theta(j)];
-        measurements{i,2} = [measurements{i,2} dist(j)];
-        measurements{i,3} = [measurements{i,3} flag(j)];
+            help = i-1;
+        number_landmarkss(help) = number_landmarkss(help)+1;
+        measurements{help,1} = [measurements{help,1} theta(j)];
+        measurements{help,2} = [measurements{help,2} dist(j)];
+        measurements{help,3} = [measurements{help,3} flag(j)];
         end
     end
 end

@@ -10,13 +10,6 @@ tic;
 d = load(mapfile);
 
 bound = [0 1424 0 1088];
-%%
-% Parameter Initialization
-[S,R,Q,Lambda_psi] = init(bound,start_pose);
-%%
-% Code initialization
-% clc;
-
 sensorpose = [0;0;0];
 if verbose
     fige = figure(1); % Estimated Movement and Map
@@ -38,7 +31,10 @@ landmarks = load(mapfile);
 hcovs = [];
 if verbose > 1
     figure(fige);
-    hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);   
+    hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);
+    for counterrr=1:1:16
+    handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
+    end
 end
 
 W = d(:,2:3)';
@@ -48,6 +44,14 @@ if fid <= 0
   disp(sprintf('Failed to open simoutput file "%s"\n',simoutfile));
   return
 end
+
+%%
+% Parameter Initialization
+[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE] = init(bound,start_pose,Map_IDS(end));
+%%
+% Code initialization
+% clc;
+
 flines = {};
 while 1
     line = fgetl(fid);
@@ -65,7 +69,7 @@ errpose = [];
 count = 0;
 gth = [];
 total_outliers = 0;
-t = -1/3 +0.1001;
+t = 0;
 sigma = cov(S(1,:),S(2,:));
 var_theta = var(S(3,:));
 s_sigma = zeros(3,3);
@@ -117,7 +121,7 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,count);
+        [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE);
 
         total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
@@ -200,7 +204,7 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,count);
+    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE);
         
     total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);
@@ -229,8 +233,23 @@ while 1
         set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
         he = [];  
         if verbose > 1
+            % position covariance
             pcov= abs(make_covariance_ellipses(mu,sigma));
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
+            %landmark covariance
+            for counter = 1:1:Map_IDS(end)
+                if S(5+(counter-1)*7,1)==1
+                    mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];
+                    sig11 = sum(S(4,:).*S(8+(counter-1)*7,:));
+                    sig12 = sum(S(4,:).*S(9+(counter-1)*7,:));
+                    sig21 = sum(S(4,:).*S(10+(counter-1)*7,:));
+                    sig22 = sum(S(4,:).*S(11+(counter-1)*7,:));
+                    sigma_landmark= [sig11, sig12;sig21,sig22];
+                    pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
+                    set(handle_vec(counter),'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
+                end
+            end
+            
         end
         title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
         axis([xmin xmax ymin ymax]) 

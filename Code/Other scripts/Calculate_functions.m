@@ -9,18 +9,17 @@ clear all;
 
 %h_inv = solve(z==h,mu)
 
-syms H11 H12 H21 H22 Sig11 Sig12 Sig21 Sig22 Q11 Q12 Q21 Q22 zd1 zd2 real
+syms H11 H12 H21 H22 Sig11 Sig12 Sig21 Sig22 Q11 Q12 Q21 Q22 K1 K2 K3 K4 mu1 mu2 zd1 zd2 real
 
 H = [H11 H12;H21 H22];
 Sig = [Sig11 Sig12;Sig21 Sig22];
 H_T = transpose(H);
-Q = [Q11 0;0 Q22];
-
-results = H*Q*H_T 
-
-% z= [zd1;zd2];
-% 
-% z'*Q*(z)
+Q = [Q11 Q12;Q21 Q22];
+mu = [mu1; mu2];
+z= [zd1;zd2];
+K = [K1 K2; K3 K4];
+I = [1 0; 0 1];
+results = (I-K*H)*Sig
 
 
 

@@ -19,7 +19,7 @@ function [S_bar] = predict_landmarks(S,Q_t,map_ids,num_landmarks)
             else
                 z_hat = observation_model_slam(S(1:3,:),S(m_idx+1:m_idx+2,:));
                 H = calculate_jacobian(S(1:3,:),S(m_idx+1:m_idx+2,:));
-                Q = 0;
+                Q = 
                 
             end
 %         else

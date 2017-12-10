@@ -6,7 +6,7 @@
 %			Q:				2X2
 %           Lambda_psi:     1X1
 %           start_pose:     3X1
-function [S,R,Q,Lambda_psi] = init(bound,start_pose,number_landmarks)
+function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE] = init(bound,start_pose,number_landmarks)
 M = 1000;
 if ~isempty(start_pose)
     S_x = [repmat(start_pose,1,M); 1/M*ones(1,M)];
@@ -17,7 +17,7 @@ else
          1/M*ones(1,M)];
 end
 
-Landmark_init = [0;-1;-1;-1;-1];
+Landmark_init = [0;-1;-1;-1;-1;-1]; % seenflag;mu_x;mu_y;Sig11;Sig12;Sig22
 S_M = repmat(Landmark_init,number_landmarks,M);
 S = [S_x;S_M];
 

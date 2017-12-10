@@ -118,7 +118,7 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE);
+        [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE);
 
         total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
@@ -201,7 +201,7 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,count);
+    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count);
         
     total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);

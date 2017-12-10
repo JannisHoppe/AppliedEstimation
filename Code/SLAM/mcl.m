@@ -15,7 +15,7 @@
 % Outputs:
 %           S(t)                4XM
 %           outliers            1X1
-function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE)
+function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE)
 
 S_bar_state = S(1:4,:);
 [S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t);
@@ -26,11 +26,12 @@ if USE_KNOWN_ASSOCIATIONS
     for i = 1 : size(z,2)
         map_ids(i) = find(Map_IDS == known_associations(i));
     end
-    [outlier,Psi] = associate_known(S_bar,z,W,Lambda_psi,Q,map_ids);
+    [S_bar] = predict_landmarks(S_bar,z,Lambda_psi,Q,map_ids);
 else
-    [outlier,Psi] = associate(S_bar,z,W,Lambda_psi,Q);
+    % yet to be implemented
 end
-outliers = sum(outlier);
+
+outliers = 0;
 if outliers
     display(sprintf('warning, %d measurements were labeled as outliers, t=%d',sum(outlier), t));
 end

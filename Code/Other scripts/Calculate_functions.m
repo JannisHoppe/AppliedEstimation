@@ -14,13 +14,13 @@ syms H11 H12 H21 H22 Sig11 Sig12 Sig21 Sig22 Q11 Q12 Q21 Q22 zd1 zd2 real
 H = [H11 H12;H21 H22];
 Sig = [Sig11 Sig12;Sig21 Sig22];
 H_T = transpose(H);
-Q = [Q11 Q12;Q21 Q22];
+Q = [Q11 0;0 Q22];
 
-results = H*Sig*H_T + Q
+results = H*Q*H_T 
 
-z= [zd1;zd2];
-
-z'*Q*(z)
+% z= [zd1;zd2];
+% 
+% z'*Q*(z)
 
 
 

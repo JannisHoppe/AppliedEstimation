@@ -17,7 +17,7 @@ else
          1/M*ones(1,M)];
 end
 
-Landmark_init = [0;-1;-1;-1;-1;-1]; % seenflag;mu_x;mu_y;Sig11;Sig12;Sig22
+Landmark_init = [0;-1;-1;-1;-1;-1;-1]; % seenflag;mu_x;mu_y;Sig11;Sig12;Sig21;Sig22
 S_M = repmat(Landmark_init,number_landmarks,M);
 S = [S_x;S_M];
 

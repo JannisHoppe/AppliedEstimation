@@ -230,8 +230,23 @@ while 1
         set(parts_handle,'xdata',S(1,:),'ydata',S(2,:));
         he = [];  
         if verbose > 1
+            % position covariance
             pcov= abs(make_covariance_ellipses(mu,sigma));
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
+            %landmark covariance
+            for counter = 1:1:Map_IDS(end)
+                if S(5+(counter-1)*7,1)==1
+                    mu_landmark = [mean(S(4,:).*S(6+(counter-1)*7,:));mean(S(4,:).*S(7+(counter-1)*7,:))];
+                    sig11 = mean(S(4,:).*S(8+(counter-1)*7,:));
+                    sig12 = mean(S(4,:).*S(9+(counter-1)*7,:));
+                    sig21 = mean(S(4,:).*S(10+(counter-1)*7,:));
+                    sig22 = mean(S(4,:).*S(11+(counter-1)*7,:));
+                    sigma_landmark= [sig11, sig12;sig21,sig22];
+                    pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
+                    set(hcovs,'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
+                end
+            end
+            
         end
         title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
         axis([xmin xmax ymin ymax]) 

@@ -19,14 +19,14 @@ function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_ID
 
 S_bar_state = S(1:4,:);
 [S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t);
-S_bar = [S_bar_state;S];
+S_bar = [S_bar_state;S(5:end,:)];
 
 if USE_KNOWN_ASSOCIATIONS
     map_ids = zeros(1,size(z,2));
     for i = 1 : size(z,2)
         map_ids(i) = find(Map_IDS == known_associations(i));
     end
-    [S_bar] = predict_landmarks(S_bar,z,Lambda_psi,Q,map_ids);
+    [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)));
 else
     % yet to be implemented
 end

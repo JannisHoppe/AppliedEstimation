@@ -66,7 +66,7 @@ errpose = [];
 count = 0;
 gth = [];
 total_outliers = 0;
-t = -1/3 +0.1001;
+t = 0;
 sigma = cov(S(1,:),S(2,:));
 var_theta = var(S(3,:));
 s_sigma = zeros(3,3);
@@ -201,7 +201,7 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count);
+    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE);
         
     total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);

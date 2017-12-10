@@ -2,15 +2,16 @@
 % z = measurement for this time step
 function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
     S_bar = S;
+    weights_landmarks = [];
     for j= 1:num_landmarks
-        weight_landmarks = [];
+        
         %Feature measured ? 
         if ismember(j,map_ids)
             %Feature seen before?
             m_idx = 5+(j-1)*7;
             if(max(S(m_idx,:))==0)%no
                 S_bar(m_idx,:) = 1; %now it was seen
-                %mean : S_bar(m_idx+1:m_idx+2,:)
+                S_bar(m_idx+1:m_idx+2,:) = initialize_mean(z(:,find(map_ids==j)),[S(1,:);S(2,:);S(3,:)]);
                 H = calculate_jacobian(S(1:3,:),S_bar(m_idx+1:m_idx+2,:));
                 inv_H = special_mat_inverse(H);
                 S_bar(m_idx+3,:) = Q_t(1)*(inv_H(1,:)).^2 + Q_t(4) * (inv_H(2,:)).^2 ;
@@ -38,7 +39,7 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                 S_bar(m_idx+4,:) = -S(m_idx+4,:).*(H(1,:).*K(1,:) + H(3,:).*K(2,:) - 1) - S(m_idx+6,:).*(H(2,:).*K(1,:) + H(4,:).*K(2,:));
                 S_bar(m_idx+5,:) = -S(m_idx+3,:).*(H(1,:).*K(3,:) + H(3,:).*K(4,:)) - S(m_idx+5,:).*(H(2,:).*K(3,:) + H(4,:).*K(4,:)-1);
                 S_bar(m_idx+6,:) = -S(m_idx+4,:).*(H(1,:).*K(3,:) + H(3,:).*K(4,:)) - S(m_idx+6,:).*(H(2,:).*K(3,:) + H(4,:).*K(4,:)-1);
-                weights_landmarks = [weights_landmarks; weight_feature(z,z_hat,Q)];
+                weights_landmarks = [weights_landmarks; weight_feature(z(:,find(map_ids==j)),z_hat,Q)];
               
 
             end

@@ -18,7 +18,7 @@
 function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,W,Lambda_psi,Map_IDS,delta_t,t)
 %if abs(v) < 10*eps && abs(omega) < 10*eps
 [S_bar] = predict(S,v,omega,R,delta_t);
-USE_KNOWN_ASSOCIATIONS = 0;
+USE_KNOWN_ASSOCIATIONS = 1;
 
 if USE_KNOWN_ASSOCIATIONS
     map_ids = zeros(1,size(z,2));

@@ -23,4 +23,3 @@ results = (I-K*H)*Sig
 
 
 
-z'*Q*(z)

@@ -31,10 +31,11 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                 weights_landmarks = [weights_landmarks; ones(1,size(S,2))];
             else
                 if j==3
-                    z_j= observation_model(S_bar,W,j);
+                    z_j= observation_model(S_bar,[213;763],j);
                     nu_ij = z(:,find(map_ids==j))-z_j;
                     nu_ij(2,:)= mod(nu_ij(2,:)+pi,2*pi)-pi;    
                     weight_post = 1/((2*pi)*(det(Q_t)^0.5))*exp(-0.5*(nu_ij(1,:).^2/Q_t(1)+ nu_ij(2,:).^2*Q_t(4)^-1));
+                    continue;
                 end
                 z_hat = observation_model_slam(S(1:3,:),S(m_idx+1:m_idx+2,:));
                 H = calculate_jacobian(S(1:3,:),S(m_idx+1:m_idx+2,:));

@@ -6,7 +6,7 @@
 %			Q:				2X2
 %           Lambda_psi:     1X1
 %           start_pose:     3X1
-function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE] = init(bound,start_pose,number_landmarks)
+function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,number_landmarks)
 M = 1000;
 if ~isempty(start_pose)
     S_x = [repmat(start_pose,1,M); 1/M*ones(1,M)];
@@ -26,5 +26,5 @@ Q = diag([250;20*2*pi/360]); % measurement noise covariance matrix
 Lambda_psi = 0.0000001;
 USE_KNOWN_ASSOCIATIONS = 1;
 RESAMPLE_MODE = 2; %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
-
+FIXED_POST_STATION = 1;
 end

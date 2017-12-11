@@ -15,7 +15,7 @@
 % Outputs:
 %           S(t)                4XM
 %           outliers            1X1
-function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE)
+function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION)
 
 S_bar_state = S(1:4,:);
 [S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t);
@@ -26,7 +26,7 @@ if USE_KNOWN_ASSOCIATIONS
     for i = 1 : size(z,2)
         map_ids(i) = find(Map_IDS == known_associations(i));
     end
-    [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)));
+    [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)),FIXED_POST_STATION);
 else
     % yet to be implemented
 end

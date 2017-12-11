@@ -1,10 +1,11 @@
 %map_ids -- id's of the landmarks that were seen this time step
 % z = measurement for this time step
-function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
+function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks,FIXED_POST_STATION)
     S_bar = S;
     weights_landmarks = [];
     weight_post = -1*ones(1,length(S(1,:)));
     post_seen = 0;
+    
     for j= 1:num_landmarks
         
         %Feature measured ? 
@@ -13,7 +14,7 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
             m_idx = 5+(j-1)*7;
             if(max(S(m_idx,:))==0)%no
                 S_bar(m_idx,:) = 1; %now it was seen
-                if j==3
+                if j==3 && FIXED_POST_STATION
                     S_bar(m_idx+1:m_idx+2,:) = repmat([213;763],1,length(S(1,:)));
                     S_bar(m_idx+3,:) = 1;
                     S_bar(m_idx+4,:) = 0;
@@ -30,7 +31,7 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                 end
                 weights_landmarks = [weights_landmarks; ones(1,size(S,2))];
             else
-                if j==3
+                if j==3&&FIXED_POST_STATION
                     z_j= observation_model(S_bar,[213;763],j);
                     nu_ij = z(:,find(map_ids==j))-z_j;
                     nu_ij(2,:)= mod(nu_ij(2,:)+pi,2*pi)-pi;    

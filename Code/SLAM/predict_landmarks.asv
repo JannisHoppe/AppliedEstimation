@@ -4,7 +4,6 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
     S_bar = S;
     weights_landmarks = [];
     weight_post = -1*ones(1,length(S(1,:)));
-    post_seen = 0;
     for j= 1:num_landmarks
         
         %Feature measured ? 
@@ -63,6 +62,6 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
         weights_landmarks = [weights_landmarks;weight_post];
         post_seen = 1;
     end
-    S_bar(4,:) = weight_particles(weights_landmarks,post_seen);
+    S_bar(4,:) = weight_particles(weights_landmarks);
 end
 

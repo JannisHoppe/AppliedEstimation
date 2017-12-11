@@ -31,7 +31,10 @@ landmarks = load(mapfile);
 hcovs = [];
 if verbose > 1
     figure(fige);
-    hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);   
+    hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);
+    for counterrr=1:1:16
+    handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
+    end
 end
 
 W = d(:,2:3)';
@@ -237,13 +240,13 @@ while 1
             for counter = 1:1:Map_IDS(end)
                 if S(5+(counter-1)*7,1)==1
                     mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];
-                    sig11 = mean(S(4,:).*S(8+(counter-1)*7,:));
-                    sig12 = mean(S(4,:).*S(9+(counter-1)*7,:));
-                    sig21 = mean(S(4,:).*S(10+(counter-1)*7,:));
-                    sig22 = mean(S(4,:).*S(11+(counter-1)*7,:));
+                    sig11 = sum(S(4,:).*S(8+(counter-1)*7,:));
+                    sig12 = sum(S(4,:).*S(9+(counter-1)*7,:));
+                    sig21 = sum(S(4,:).*S(10+(counter-1)*7,:));
+                    sig22 = sum(S(4,:).*S(11+(counter-1)*7,:));
                     sigma_landmark= [sig11, sig12;sig21,sig22];
                     pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
-                    set(hcovs,'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
+                    set(handle_vec(counter),'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
                 end
             end
             

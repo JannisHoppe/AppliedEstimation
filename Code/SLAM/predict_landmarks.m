@@ -32,8 +32,8 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                     inv_Q(1,:).*(H(1,:).*S(m_idx+5,:) + H(2,:).*S(m_idx+6,:)) + inv_Q(3,:).*(H(3,:).* S(m_idx+5,:) + H(4,:).*S(m_idx+6,:));
                     inv_Q(2,:).*(H(1,:).*S(m_idx+5,:) + H(2,:).*S(m_idx+6,:)) + inv_Q(4,:).*(H(3,:).* S(m_idx+5,:) + H(4,:).*S(m_idx+6,:))];
                 % update mean for landmark
-                S_bar(m_idx+1,:) = S(m_idx+1,:) + K(1,:).* (z(1) - z_hat(1,:)) + K(2,:).*(z(2)-z_hat(2,:));
-                S_bar(m_idx+2,:) = S(m_idx+2,:) + K(3,:).*(z(1) - z_hat(1,:)) + K(4,:).*(z(2)-z_hat(2,:));
+                S_bar(m_idx+1,:) = S(m_idx+1,:) + K(1,:).* (z(1,find(map_ids==j)) - z_hat(1,:)) + K(2,:).*(z(2,find(map_ids==j))-z_hat(2,:));
+                S_bar(m_idx+2,:) = S(m_idx+2,:) + K(3,:).*(z(1,find(map_ids==j)) - z_hat(1,:)) + K(4,:).*(z(2,find(map_ids==j))-z_hat(2,:));
                 % update covariance for landmark
                 S_bar(m_idx+3,:) = -S(m_idx+3,:).*(H(1,:).*K(1,:) + H(3,:).*K(2,:) - 1) - S(m_idx+5,:).*(H(2,:).*K(1,:) + H(4,:).*K(2,:)) ;
                 S_bar(m_idx+4,:) = -S(m_idx+4,:).*(H(1,:).*K(1,:) + H(3,:).*K(2,:) - 1) - S(m_idx+6,:).*(H(2,:).*K(1,:) + H(4,:).*K(2,:));

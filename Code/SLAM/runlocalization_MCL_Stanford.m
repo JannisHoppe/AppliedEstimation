@@ -236,7 +236,7 @@ while 1
             %landmark covariance
             for counter = 1:1:Map_IDS(end)
                 if S(5+(counter-1)*7,1)==1
-                    mu_landmark = [mean(S(4,:).*S(6+(counter-1)*7,:));mean(S(4,:).*S(7+(counter-1)*7,:))];
+                    mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];
                     sig11 = mean(S(4,:).*S(8+(counter-1)*7,:));
                     sig12 = mean(S(4,:).*S(9+(counter-1)*7,:));
                     sig21 = mean(S(4,:).*S(10+(counter-1)*7,:));

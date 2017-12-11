@@ -18,6 +18,7 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                 S_bar(m_idx+4,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
                 S_bar(m_idx+5,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
                 S_bar(m_idx+6,:) = Q_t(1) * (inv_H(3,:)).^2 + Q_t(4)*(inv_H(4,:)).^2;
+                
                 weights_landmarks = [weights_landmarks; ones(1,size(S,2))];
             else
                 z_hat = observation_model_slam(S(1:3,:),S(m_idx+1:m_idx+2,:));
@@ -39,7 +40,7 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks)
                 S_bar(m_idx+4,:) = -S(m_idx+4,:).*(H(1,:).*K(1,:) + H(3,:).*K(2,:) - 1) - S(m_idx+6,:).*(H(2,:).*K(1,:) + H(4,:).*K(2,:));
                 S_bar(m_idx+5,:) = -S(m_idx+3,:).*(H(1,:).*K(3,:) + H(3,:).*K(4,:)) - S(m_idx+5,:).*(H(2,:).*K(3,:) + H(4,:).*K(4,:)-1);
                 S_bar(m_idx+6,:) = -S(m_idx+4,:).*(H(1,:).*K(3,:) + H(3,:).*K(4,:)) - S(m_idx+6,:).*(H(2,:).*K(3,:) + H(4,:).*K(4,:)-1);
-                weights_landmarks = [weights_landmarks; weight_feature(z(:,find(map_ids==j)),z_hat,Q)];
+                weights_landmarks = [weights_landmarks; weight_feature(z(:,find(map_ids==j)),z_hat,inv_Q)];
               
 
             end

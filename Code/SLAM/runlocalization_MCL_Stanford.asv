@@ -162,9 +162,6 @@ for v=1:endframe
             help_mu = [mu(1);plot_transform(mu(2));mu(3)];
             pcov= make_covariance_ellipses(help_mu,sigma);
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
-            for counterrr=1:1:16
-                handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
-            end
             for counter = 1:1:Map_IDS(end)
                 if S(5+(counter-1)*7,1)==1
                     mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];

@@ -29,7 +29,10 @@ if USE_KNOWN_ASSOCIATIONS
     [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)),FIXED_POST_STATION);
 else
     for particle =1:1:length(S(1,:))
-        measurement_likelihoods(S(:,1),z,Q);
+        
+        weights = measurement_likelihoods(S(:,1),z,Q);
+        [N,c] = associate(weights);        
+        
         
     end
 end

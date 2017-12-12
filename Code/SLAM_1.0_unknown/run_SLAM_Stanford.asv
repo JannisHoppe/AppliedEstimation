@@ -256,7 +256,7 @@ while 1
             counter = 1;
             while S(6+(counter-1)*7,ind) ~= 0
                     mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
-                    sig11 = S(8+(counter-1)*7,ind);
+                    sig11 = S(8+(counter-1)*7,ind);;
                     sig12 = S(9+(counter-1)*7,ind);
                     sig21 = S(10+(counter-1)*7,ind);
                     sig22 = S(11+(counter-1)*7,ind);

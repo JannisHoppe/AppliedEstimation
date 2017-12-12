@@ -15,7 +15,7 @@
 % Outputs:
 %           S(t)                4XM
 %           outliers            1X1
-function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION)
+function [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION)
 
 S_bar_state = S(1:4,:);
 [S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t);

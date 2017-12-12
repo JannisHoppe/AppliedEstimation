@@ -1,6 +1,6 @@
 % function runlocalization_track(simoutfile, mapfile,show_estimate,show_gth,show_odo,verbose)
 % This function is the entrance point to the code. 
-function runlocalization_MCL_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback)
+function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback)
 if nargin <7
     video_playback = 0; % Verbose = 0: no visual output, 1: estimates and groundtruth, 2: (1)+ covariance elipse
 end
@@ -121,7 +121,7 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+        [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
 
         total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
@@ -219,7 +219,7 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+    [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
         
     total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);

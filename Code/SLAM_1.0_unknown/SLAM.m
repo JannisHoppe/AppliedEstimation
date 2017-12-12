@@ -15,7 +15,7 @@
 % Outputs:
 %           S(t)                4XM
 %           outliers            1X1
-function [S,outliers] = mcl(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION)
+function [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION)
 
 S_bar_state = S(1:4,:);
 [S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t);
@@ -28,7 +28,13 @@ if USE_KNOWN_ASSOCIATIONS
     end
     [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)),FIXED_POST_STATION);
 else
-    % yet to be implemented
+    for particle =1:1:length(S(1,:))
+        
+        weights = measurement_likelihoods(S(:,1),z,Q);
+        [N,c] = associate(weights);        
+        
+        
+    end
 end
 
 outliers = 0;

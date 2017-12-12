@@ -22,12 +22,12 @@ function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks,FIXED_POST_ST
                     S_bar(m_idx+6,:) = 1;
                 else 
                     S_bar(m_idx+1:m_idx+2,:) = initialize_mean(z(:,find(map_ids==j)),[S(1,:);S(2,:);S(3,:)]);
-                H = calculate_jacobian(S(1:3,:),S_bar(m_idx+1:m_idx+2,:));
-                inv_H = special_mat_inverse(H);
-                S_bar(m_idx+3,:) = Q_t(1)*(inv_H(1,:)).^2 + Q_t(4) * (inv_H(2,:)).^2 ;
-                S_bar(m_idx+4,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
-                S_bar(m_idx+5,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
-                S_bar(m_idx+6,:) = Q_t(1) * (inv_H(3,:)).^2 + Q_t(4)*(inv_H(4,:)).^2;
+                    H = calculate_jacobian(S(1:3,:),S_bar(m_idx+1:m_idx+2,:));
+                    inv_H = special_mat_inverse(H);
+                    S_bar(m_idx+3,:) = Q_t(1)*(inv_H(1,:)).^2 + Q_t(4) * (inv_H(2,:)).^2 ;
+                    S_bar(m_idx+4,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
+                    S_bar(m_idx+5,:) = Q_t(1)* (inv_H(1,:).*inv_H(3,:)) + Q_t(4) *(inv_H(2,:).*inv_H(4,:));
+                    S_bar(m_idx+6,:) = Q_t(1) * (inv_H(3,:)).^2 + Q_t(4)*(inv_H(4,:)).^2;
                 end
                 weights_landmarks = [weights_landmarks; ones(1,size(S,2))];
             else

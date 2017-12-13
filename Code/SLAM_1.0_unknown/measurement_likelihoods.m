@@ -11,6 +11,6 @@ function weights = measurement_likelihoods(particle,z,Q_t)
                 particle(l_idx+4) particle(l_idx+5)];
         Q = H * Sigma * H' + Q_t;
         inv_Q = Q^-1;
-        weights = [weights; weight_feature(z,z_hat,inv_Q)];
+        weights = [weights; weight_feature(z,z_hat,inv_Q,Q)];
     end
 end

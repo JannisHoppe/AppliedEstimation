@@ -1,4 +1,4 @@
-function [ N,c,weight ] = associate_and_weight( weights,z,N_before )
+function [ N,c,weight ] = associate_and_weight( weights,z,N_before,S_bar_part )
 %ASSOCIATE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -34,7 +34,8 @@ N = max(number_features_before,max(c(1,:))); %vielleicht falsch
 
 for counter = 1:1:num_measurements
     if c(1,counter) <= N_before % multiply the weight of all features seen before
-        weight = weight*weights(c(1,counter),counter);       
+        weight = weight*weights(c(1,counter),counter);    
+        
     end
 end
 % if weight==1

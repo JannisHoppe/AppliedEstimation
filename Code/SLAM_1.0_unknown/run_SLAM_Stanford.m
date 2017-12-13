@@ -32,7 +32,7 @@ hcovs = [];
 if verbose > 1
     figure(fige);
     hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);
-    for counterrr=1:1:16
+    for counterrr=1:1:16*2
     handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
     end
 end

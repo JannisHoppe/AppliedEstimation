@@ -32,7 +32,7 @@ else
     for particle =1:1:length(S(1,:))   
         N_before = S(5,particle);
         weights = measurement_likelihoods(S(:,particle),z,Q);
-        [N,c,weight] = associate_and_weight(weights,z);
+        [N,c,weight] = associate_and_weight(weights,z,N_before);
         weight_particles(1,particle) = weight;
         S_bar(5,particle) = N;
         S_bar(:,particle) = update_kalman(S_bar(:,particle),z,c,Q,N_before);       

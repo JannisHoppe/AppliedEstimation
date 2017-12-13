@@ -1,4 +1,4 @@
-function [ N,c,weight ] = associate_and_weight( weights,z )
+function [ N,c,weight ] = associate_and_weight( weights,z,N_before )
 %ASSOCIATE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -29,7 +29,7 @@ c(1,:) = c(1,:)+ counter_new_feature;
 N = max(number_features_before,max(c(1,:)));
 
 for counter = 1:1:num_measurements
-    if c(1,counter) <= num_features_before % multiply the weight of all features seen before
+    if c(1,counter) <= N_before % multiply the weight of all features seen before
         weight = weight*weights(c(1,counter),counter);       
     end
 end

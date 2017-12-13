@@ -29,9 +29,9 @@ if USE_KNOWN_ASSOCIATIONS
     [S_bar] = predict_landmarks(S_bar,Q,z,map_ids,length(Map_IDS(1,:)),FIXED_POST_STATION);
 else
     weight_particles = zeros(1,length(S_bar(1,:)));
-    for particle =1:1:length(S(1,:))   
-        N_before = S(5,particle);
-        weights = measurement_likelihoods(S(:,particle),z,Q);
+    for particle =1:1:length(S_bar(1,:))   
+        N_before = S_bar(5,particle);
+        weights = measurement_likelihoods(S_bar(:,particle),z,Q);
         [N,c,weight] = associate_and_weight(weights,z,N_before);
         weight_particles(1,particle) = weight;
         S_bar(5,particle) = N;

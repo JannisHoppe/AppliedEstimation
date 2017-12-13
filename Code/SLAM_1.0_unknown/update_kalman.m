@@ -20,7 +20,7 @@ for i = 1:num_mes
         if (feature_idx <= old_number_features)
             checked(feature_idx) = 1;
             z_hat = observation_model_slam(particle(1:3),particle(p_idx:p_idx+1));
-            H = calculate_jacobian(part(1:2),part(p_idx:p_idx+1));
+            H = calculate_jacobian(particle(1:3),particle(p_idx:p_idx+1));
             H = reshape(H,2,2);
             Sigma = [particle(p_idx+2) particle(p_idx+3); 
                 particle(p_idx+4) particle(p_idx+5)];

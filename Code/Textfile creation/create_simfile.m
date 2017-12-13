@@ -1,6 +1,6 @@
 sensor_max_distance = 500; %max sensor distance in pixles
-sigma_Q = [12,5*2*pi/360];
-disturb_measurements = 0;
+sigma_Q = [12,2*2*pi/360];
+disturb_measurements = 1;
 
 true_path = make_true_path();
 load('time_vec_vid.mat');

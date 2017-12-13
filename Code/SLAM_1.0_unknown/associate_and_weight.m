@@ -1,6 +1,14 @@
-function [ N,c,weight ] = associate_and_weight( weights )
+function [ N,c,weight ] = associate_and_weight( weights,z )
 %ASSOCIATE Summary of this function goes here
 %   Detailed explanation goes here
+
+if isempty(weights)
+    N = size(z,2);
+    weight = 1;
+    for counter = 1:1:N
+        c(1,counter) = counter;
+    end
+else
 num_measurements = length(weights(1,:)); 
 c = zeros(1,num_measurements); %association vector
 number_features_before = length(weights(:,1)); % number of features seen in the last time step. 
@@ -28,6 +36,6 @@ end
 % if weight==1
 %     weight = 0; % if the weigh
 % end
-        
+end  
 end
 

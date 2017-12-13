@@ -254,7 +254,7 @@ while 1
             %landmark covariance
             [~,ind]= max(S(4,:));
             counter = 1;
-            while S(6+(counter-1)*7,ind) ~= 0
+            while S(6+(counter-1)*7,ind) ~= -1
                     mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
                     sig11 = S(8+(counter-1)*7,ind);
                     sig12 = S(9+(counter-1)*7,ind);
@@ -263,6 +263,7 @@ while 1
                     sigma_landmark= [sig11, sig12;sig21,sig22];
                     pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
                     set(handle_vec(counter),'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
+                    counter = counter+1;
             end
             
         end

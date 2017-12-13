@@ -43,7 +43,7 @@ for i=1:old_number_features
         if(diff_range < 500)
             part_bar(p_idx+6) = particle(p_idx+6) - 1;
             if(part_bar(p_idx+6)<0)
-                p_bar = discard_feature(p_bar,p_idx);
+                part_bar = discard_feature(part_bar,p_idx);
             end
         end
     end

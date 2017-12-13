@@ -33,6 +33,6 @@ S_M = repmat(Landmark_init,number_landmarks,M);
 S = [S_x;S_M];   
 end
 R = diag([10 10 1*2*pi/360]); %process noise covariance matrix
-Q = diag([250;20*2*pi/360]); % measurement noise covariance matrix
+Q = diag([25;10*2*pi/360]); % measurement noise covariance matrix
 Lambda_psi = 0.0000001;
 end

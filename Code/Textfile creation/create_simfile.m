@@ -1,5 +1,5 @@
 sensor_max_distance = 500; %max sensor distance in pixles
-sigma_Q = [12,2*2*pi/360];
+sigma_Q = [(5)^2,(2*2*pi/360)^2];
 disturb_measurements = 1;
 
 true_path = make_true_path();

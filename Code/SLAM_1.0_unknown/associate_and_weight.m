@@ -21,7 +21,7 @@ for counter = 1:1:num_measurements
     else
     weight_help = weights(:,counter);
     end
-    weight_help(end+1) = 0.2; % reference weight for getting a new feature
+    weight_help(end+1) = 1/N_before + 0.05; % reference weight for getting a new feature
     [~, c(1,counter)] = max(weight_help);
     if c(1,counter) > number_features_before
         counter_new_feature(1,counter) = max(counter_new_feature(1,:))+1;

@@ -34,8 +34,7 @@ else
         weights = measurement_likelihoods(S_bar(:,particle),z,Q);
         [N,c,weight] = associate_and_weight(weights,z,N_before,S_bar(:,particle));
         weight_particles(1,particle) = weight;
-        S_bar(5,particle) = N;
-        S_bar(:,particle) = update_kalman(S_bar(:,particle),z,c,Q,N_before);       
+        S_bar(:,particle) = update_kalman(S_bar(:,particle),z,c,Q,N_before,t);       
     end
     S_bar(4,:) = weight_particles./sum(weight_particles);
 end

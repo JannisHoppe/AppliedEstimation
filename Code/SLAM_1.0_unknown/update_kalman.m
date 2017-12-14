@@ -17,9 +17,9 @@ for i = 1:num_mes
         feature_idx = feature_idx - number_double_updates;
             part_bar(p_idx:p_idx+1) = new_feature_pose;
         H = calculate_jacobian(particle(1:3),part_bar(p_idx:p_idx+1));
-        H = reshape(H,2,2);
+        H = special_mat_reshape(H);
         inv_H = H^-1;
-        A = inv_H' * Q_t * inv_H;
+        A = inv_H * Q_t * inv_H';
         part_bar(p_idx+2)= A(1);
         part_bar(p_idx+3) = A(2);
         part_bar(p_idx+4) = A(3);
@@ -36,7 +36,7 @@ for i = 1:num_mes
             checked(feature_idx) = 1;
             z_hat = observation_model_slam(particle(1:3),particle(p_idx:p_idx+1));
             H = calculate_jacobian(particle(1:3),particle(p_idx:p_idx+1));
-            H = reshape(H,2,2);
+            H = special_mat_reshape(H);
             Sigma = [particle(p_idx+2) particle(p_idx+3); 
                 particle(p_idx+4) particle(p_idx+5)];
             Q = H * Sigma * H' + Q_t;
@@ -68,7 +68,7 @@ for i=1:old_number_features
     end
 end
 i = 1;
-while(part_bar(12 + (i-1)*7) >= 1)
+while(part_bar(12 + (i-1)*7) >= 0)
     N_count = N_count+1;
     i = i+1;
 end

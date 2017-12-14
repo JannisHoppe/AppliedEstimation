@@ -28,11 +28,11 @@ S_M = repmat(Landmark_init,number_landmarks,M);
 S = [S_x;S_M];
 else
 S_x = [S_x; zeros(1,M)]; %Number seen Landmarks
-Landmark_init = [-1;-1;-1;-1;-1;-1;0]; % mu_x;mu_y;Sig11;Sig12;Sig21;Sig22, counter
+Landmark_init = [-1;-1;-1;-1;-1;-1;-1]; % mu_x;mu_y;Sig11;Sig12;Sig21;Sig22, counter
 S_M = repmat(Landmark_init,number_landmarks*2,M);
 S = [S_x;S_M];   
 end
-R = diag([4 4 1*2*pi/360]); %process noise covariance matrix
-Q = diag([150;2*2*pi/360]); % measurement noise covariance matrix
+R = diag([4^2 4^2 (5*2*pi/360)^2]); %process noise covariance matrix
+Q = diag([150;(5*2*pi/360)^2]); % measurement noise covariance matrix
 Lambda_psi = 0.0000001;
 end

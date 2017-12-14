@@ -12,7 +12,7 @@ delta = features_coord-new_feature_pose;
 dist = sqrt(delta(1,:).^2+delta(2,:).^2);
 [min_dist,ind] = min(dist);
 
-if min_dist < 60
+if min_dist < 80
     feature_idx = ind;
 end
 

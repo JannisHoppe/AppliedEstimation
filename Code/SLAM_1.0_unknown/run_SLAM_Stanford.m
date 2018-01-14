@@ -1,8 +1,9 @@
-% function runlocalization_track(simoutfile, mapfile,show_estimate,show_gth,show_odo,verbose)
-% This function is the entrance point to the code. 
-function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback)
+%run the whole simulation
+function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback,known_post,VR_resampling)
 if nargin <7
     video_playback = 0; % Verbose = 0: no visual output, 1: estimates and groundtruth, 2: (1)+ covariance elipse
+    known_post = 1;
+    VR_resampling = 0;
 end
 help = 1;
 %% Loading the map file
@@ -32,7 +33,7 @@ hcovs = [];
 if verbose > 1
     figure(fige);
     hcovs = plot(0,0,'r','erasemode','xor','LineWidth',5,'MarkerSize',5);
-    for counterrr=1:1:16
+    for counterrr=1:1:16*2
     handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
     end
 end
@@ -47,7 +48,7 @@ end
 
 %%
 % Parameter Initialization
-[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,Map_IDS(end));
+[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE] = init(bound,start_pose,Map_IDS(end),known_post,VR_resampling);
 %%
 % Code initialization
 % clc;
@@ -121,9 +122,9 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+        [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
 
-        total_outliers = total_outliers + outliers;
+        %total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
         sigma = cov(S(1,:),S(2,:));
         rerr = truepose - mu;
@@ -162,20 +163,20 @@ for v=1:endframe
             help_mu = [mu(1);plot_transform(mu(2));mu(3)];
             pcov= make_covariance_ellipses(help_mu,sigma);
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
-            for counterrr=1:1:16
+            for counterrr=1:1:16*2
                 handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
             end
-            for counter = 1:1:Map_IDS(end)
-                if S(5+(counter-1)*7,1)==1
-                    mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];
-                    sig11 = sum(S(4,:).*S(8+(counter-1)*7,:));
-                    sig12 = sum(S(4,:).*S(9+(counter-1)*7,:));
-                    sig21 = sum(S(4,:).*S(10+(counter-1)*7,:));
-                    sig22 = sum(S(4,:).*S(11+(counter-1)*7,:));
+            [~,ind]= max(current_weights);
+            counter = 1;
+            for counter =1:1:S(5,ind)
+                    mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
+                    sig11 = S(8+(counter-1)*7,ind);
+                    sig12 = S(9+(counter-1)*7,ind);
+                    sig21 = S(10+(counter-1)*7,ind);
+                    sig22 = S(11+(counter-1)*7,ind);
                     sigma_landmark= [sig11, sig12;sig21,sig22];
                     pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
                     set(handle_vec(counter),'xdata',pcov_landmark(1,:),'ydata',plot_transform(pcov_landmark(2,:)));
-                end
             end
         end  
     end        
@@ -183,7 +184,7 @@ for v=1:endframe
         %plot(truepose(1), truepose(2), 'gx');
         plot(plot_save_groundtruth_x,plot_transform(plot_save_groundtruth_y),'gx');
     end  
-    title(sprintf('t= %d, total outliers=%d, current outliers=%d',time,total_outliers,outliers));
+    title(sprintf('Map ap t= %d',time));
     
     drawnow
     help = help +1;
@@ -219,9 +220,9 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+    [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
         
-    total_outliers = total_outliers + outliers;
+    %total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);
     sigma = cov(S(1,:),S(2,:));
     rerr = truepose - mu;
@@ -252,21 +253,21 @@ while 1
             pcov= abs(make_covariance_ellipses(mu,sigma));
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
             %landmark covariance
-            for counter = 1:1:Map_IDS(end)
-                if S(5+(counter-1)*7,1)==1
-                    mu_landmark = [sum(S(4,:).*S(6+(counter-1)*7,:));sum(S(4,:).*S(7+(counter-1)*7,:))];
-                    sig11 = sum(S(4,:).*S(8+(counter-1)*7,:));
-                    sig12 = sum(S(4,:).*S(9+(counter-1)*7,:));
-                    sig21 = sum(S(4,:).*S(10+(counter-1)*7,:));
-                    sig22 = sum(S(4,:).*S(11+(counter-1)*7,:));
+            [~,ind]= max(current_weights);
+            counter = 1;
+            for counter =1:1:S(5,ind)
+                    mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
+                    sig11 = S(8+(counter-1)*7,ind);
+                    sig12 = S(9+(counter-1)*7,ind);
+                    sig21 = S(10+(counter-1)*7,ind);
+                    sig22 = S(11+(counter-1)*7,ind);
                     sigma_landmark= [sig11, sig12;sig21,sig22];
                     pcov_landmark= abs(make_covariance_ellipses(mu_landmark,sigma_landmark));
                     set(handle_vec(counter),'xdata',pcov_landmark(1,:),'ydata',pcov_landmark(2,:));
-                end
             end
             
         end
-        title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
+        title(sprintf('Map at t= %d',count));
         axis([xmin xmax ymin ymax]) 
     end        
     if n > 0 && show_gth&& verbose > 0

@@ -1,16 +1,10 @@
-% function [S,R,Q,Lambda_psi] = init(bound,start_pose)
-% This function initializes the parameters of the filter.
-% Outputs:
-%			S(0):			4XM
-%			R:				3X3
-%			Q:				2X2
-%           Lambda_psi:     1X1
-%           start_pose:     3X1
-function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,number_landmarks)
+%initialize Simulation
+function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLING] = init(bound,start_pose,number_landmarks,known_post,VR_resampling)
 
 USE_KNOWN_ASSOCIATIONS = 1;
 RESAMPLE_MODE = 2; %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
-FIXED_POST_STATION = 1;
+FIXED_POST_STATION = known_post;
+VR_RESAMPLING = VR_resampling;
 
 M = 1000;
 if ~isempty(start_pose)
@@ -32,7 +26,7 @@ Landmark_init = [-1;-1;-1;-1;-1;-1;0]; % mu_x;mu_y;Sig11;Sig12;Sig21;Sig22, coun
 S_M = repmat(Landmark_init,number_landmarks,M);
 S = [S_x;S_M];   
 end
-R = diag([10 10 1*2*pi/360]); %process noise covariance matrix
-Q = diag([250;20*2*pi/360]); % measurement noise covariance matrix
+R = diag([4^2 4^2 (5*2*pi/360)^2]); %process noise covariance matrix
+Q = diag([200;(15*2*pi/360)^2]); % measurement noise covariance matrix
 Lambda_psi = 0.0000001;
 end

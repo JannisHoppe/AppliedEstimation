@@ -1,16 +1,11 @@
-% function [S,R,Q,Lambda_psi] = init(bound,start_pose)
-% This function initializes the parameters of the filter.
-% Outputs:
-%			S(0):			4XM
-%			R:				3X3
-%			Q:				2X2
-%           Lambda_psi:     1X1
-%           start_pose:     3X1
-function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,number_landmarks)
+%initialize simulation 
+function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLING] = init(bound,start_pose,number_landmarks,known_post,VR_resampling)
 
 USE_KNOWN_ASSOCIATIONS = 0;
 RESAMPLE_MODE = 2; %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
-FIXED_POST_STATION = 1;
+FIXED_POST_STATION = known_post;
+VR_RESAMPLING = VR_resampling;
+
 
 M = 1000;
 if ~isempty(start_pose)

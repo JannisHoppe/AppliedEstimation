@@ -1,6 +1,10 @@
 function [ N,c,weight ] = associate_and_weight( weights,z,N_before,S_bar_part )
-%ASSOCIATE Summary of this function goes here
-%   Detailed explanation goes here
+% This function calculates the weights of the particles and is responsible
+% for data association. By choosing the MLE estimate for data association
+% only one of the calculated weights for each landmark remains per
+% particle. The product of these weight is taken as non normalized particle
+% weight. A new feature is introduced, if the measurement likelihood for
+% all features is smaller than a random guess.
 
 if isempty(weights)
     N = size(z,2);

@@ -1,8 +1,9 @@
-% function runlocalization_track(simoutfile, mapfile,show_estimate,show_gth,show_odo,verbose)
-% This function is the entrance point to the code. 
-function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback)
+%run the whole simulation
+function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback,known_post,VR_resampling)
 if nargin <7
     video_playback = 0; % Verbose = 0: no visual output, 1: estimates and groundtruth, 2: (1)+ covariance elipse
+    known_post = 1;
+    VR_resampling = 0;
 end
 help = 1;
 %% Loading the map file
@@ -47,7 +48,7 @@ end
 
 %%
 % Parameter Initialization
-[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,Map_IDS(end));
+[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE] = init(bound,start_pose,Map_IDS(end),known_post,VR_resampling);
 %%
 % Code initialization
 % clc;
@@ -121,9 +122,9 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+        [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
 
-        total_outliers = total_outliers + outliers;
+        %total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
         sigma = cov(S(1,:),S(2,:));
         rerr = truepose - mu;
@@ -165,7 +166,7 @@ for v=1:endframe
             for counterrr=1:1:16*2
                 handle_vec(counterrr) = plot(0,0,'c','erasemode','xor','LineWidth',5,'MarkerSize',5);
             end
-            [~,ind]= max(S(4,:));
+            [~,ind]= max(current_weights);
             counter = 1;
             for counter =1:1:S(5,ind)
                     mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
@@ -183,7 +184,7 @@ for v=1:endframe
         %plot(truepose(1), truepose(2), 'gx');
         plot(plot_save_groundtruth_x,plot_transform(plot_save_groundtruth_y),'gx');
     end  
-    title(sprintf('t= %d, total outliers=%d, current outliers=%d',time,total_outliers,outliers));
+    title(sprintf('Map ap t= %d',time));
     
     drawnow
     help = help +1;
@@ -219,9 +220,9 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+    [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
         
-    total_outliers = total_outliers + outliers;
+    %total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);
     sigma = cov(S(1,:),S(2,:));
     rerr = truepose - mu;
@@ -252,7 +253,7 @@ while 1
             pcov= abs(make_covariance_ellipses(mu,sigma));
             set(hcovs,'xdata',pcov(1,:),'ydata',pcov(2,:));
             %landmark covariance
-            [~,ind]= max(S(4,:));
+            [~,ind]= max(current_weights);
             counter = 1;
             for counter =1:1:S(5,ind)
                     mu_landmark = [S(6+(counter-1)*7,ind);S(7+(counter-1)*7,ind);];
@@ -266,7 +267,7 @@ while 1
             end
             
         end
-        title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
+        title(sprintf('Map at t= %d',count));
         axis([xmin xmax ymin ymax]) 
     end        
     if n > 0 && show_gth&& verbose > 0

@@ -1,5 +1,5 @@
 % runs the whole simulation for FAST SLAM 1.0 with known associations
-function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback,known_post,VR_resampling)
+function results =  run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback,known_post,VR_resampling,run_number)
 if nargin <7
     video_playback = 0; % Verbose = 0: no visual output, 1: estimates and groundtruth, 2: (1)+ covariance elipse
     known_post = 1;
@@ -52,7 +52,7 @@ end
 %%
 % Code initialization
 % clc;
-
+landmark_data = [];
 flines = {};
 while 1
     line = fgetl(fid);
@@ -184,8 +184,8 @@ for v=1:endframe
         %plot(truepose(1), truepose(2), 'gx');
         plot(plot_save_groundtruth_x,plot_transform(plot_save_groundtruth_y),'gx');
     end  
-    title(sprintf('t= %d, total outliers=%d, current outliers=%d',time,total_outliers,outliers));
-    
+    title(sprintf('Estimation at t= %d',count),'Interpreter','latex');
+        set(gca,'FontName','Arial','FontSize',12);
     drawnow
     help = help +1;
     
@@ -233,6 +233,11 @@ while 1
     sigma_save = [sigma_save s_sigma(:)];
     rerr(3) = mod(rerr(3)+pi,2*pi)-pi;
     errpose = [errpose rerr];
+    
+    current_landmark_data = extract_landmarks(S);
+    landmark_data = [landmark_data;current_landmark_data];
+    
+    
     for k = 1:length(h)
         delete(h(k))
     end
@@ -267,7 +272,8 @@ while 1
             end
             
         end
-        title(sprintf('t= %d, total outliers=%d, current outliers=%d',count,total_outliers,outliers));
+        title(sprintf('Estimation at t= %d',count),'Interpreter','latex');
+        set(gca,'FontName','Arial','FontSize',12);
         axis([xmin xmax ymin ymax]) 
     end        
     if n > 0 && show_gth&& verbose > 0
@@ -296,6 +302,7 @@ while 1
 end   
     
 end
+
 time = toc;
 maex = mean(abs(errpose(1,:)));
 mex = mean(errpose(1,:));
@@ -304,28 +311,43 @@ mey = mean(errpose(2,:));
 maet = mean(abs(errpose(3,:)));
 met = mean(errpose(3,:));
 display(sprintf('mean error(x, y, theta)=(%f, %f, %f)\nmean absolute error=(%f, %f, %f)\ntotal_time =%f',mex,mey,met, maex,maey,maet,time));
-if verbose >1
-    figure(2);
-    clf;
-    subplot(3,1,1);
-    plot(errpose(1,:));
-    title(sprintf('error on x, mean error=%f, mean absolute err=%f',mex,maex));
-    subplot(3,1,2);
-    plot(errpose(2,:));
-    title(sprintf('error on y, mean error=%f, mean absolute err=%f',mey,maey));
-    subplot(3,1,3);
-    plot(errpose(3,:));
-    title(sprintf('error on theta, mean error=%f, mean absolute err=%f',met,maet));
+% if verbose >1
+%     figure(2);
+%     clf;
+%     subplot(3,1,1);
+%     plot(errpose(1,:));
+%     title(sprintf('error on x, mean error=%f, mean absolute err=%f',mex,maex));
+%     subplot(3,1,2);
+%     plot(errpose(2,:));
+%     title(sprintf('error on y, mean error=%f, mean absolute err=%f',mey,maey));
+%     subplot(3,1,3);
+%     plot(errpose(3,:));
+%     title(sprintf('error on theta, mean error=%f, mean absolute err=%f',met,maet));
+%     
+%     figure(3);
+%     clf;
+%     subplot(3,1,1);
+%     plot(sigma_save(1,:));
+%     title('\Sigma(1,1)');
+%     subplot(3,1,2);
+%     plot(sigma_save(5,:));
+%     title('\Sigma(2,2)');
+%     subplot(3,1,3);
+%     plot(sigma_save(9,:));
+%     title('\Sigma(3,3)');
     
-    figure(3);
-    clf;
-    subplot(3,1,1);
-    plot(sigma_save(1,:));
-    title('\Sigma(1,1)');
-    subplot(3,1,2);
-    plot(sigma_save(5,:));
-    title('\Sigma(2,2)');
-    subplot(3,1,3);
-    plot(sigma_save(9,:));
-    title('\Sigma(3,3)');
+    results.err_x = errpose(1,:);
+    results.err_y = errpose(2,:);
+    results.err_t = errpose(3,:);
+    results.sig_11 = sigma_save(1,:);
+    results.sig_22 = sigma_save(5,:);
+    results.sig_33 = sigma_save(9,:);
+    results.landmark_data = landmark_data;
+    results.landmarks_true = extract_landmark_coords(mapfile);
+    grid off;
+    
+    savestr1 = ['results_Q=',num2str(round(Q(1,1).*100)/100),'_',num2str(round(Q(2,2).*100)/100),'_R=',num2str(round(R(1,1).*100)/100),'_',num2str(round(R(2,2).*100)/100),'_',num2str(round(R(3,3).*100)/100),'_FP=',num2str(FIXED_POST_STATION),'_VR=',num2str(VR_RESAMPLE),'_runNR',num2str(run_number),'.mat'];
+    save(fullfile([pwd '/results/'],savestr1),'results');
+    savestr2 = ['figure_Q=',num2str(round(Q(1,1).*100)/100),'_',num2str(round(Q(2,2).*100)/100),'_R=',num2str(round(R(1,1).*100)/100),'_',num2str(round(R(2,2).*100)/100),'_',num2str(round(R(3,3).*100)/100),'_FP=',num2str(FIXED_POST_STATION),'_VR=',num2str(VR_RESAMPLE),'_runNR',num2str(run_number),'.fig'];
+    saveas(gcf,[pwd '/results/' savestr2]);
 end

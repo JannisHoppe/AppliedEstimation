@@ -13,5 +13,5 @@ if strcmp(filename,'C:\Users\Thomas\Desktop\KTH\Period 2\Applied Estimation\proj
 end
 
 
-plot(d(:,2), d(:,3), 'ko')
+plot(d(:,2), d(:,3), 'ko');
 

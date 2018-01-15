@@ -195,7 +195,7 @@ for q=1:endframe
     title(sprintf('Estimation at t= %d',count),'Interpreter','latex');
     set(gca,'FontName','Arial','FontSize',12);
     drawnow
-    F(q) = getframe(gcf);
+    F(q) = getframe(gca);
     help = help +1;
     if  q==max_iterations
         break

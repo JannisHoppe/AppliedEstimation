@@ -1,9 +1,5 @@
-% function S_bar = weight(S_bar,Psi,outlier)
-%           S_bar(t)            4XM
-%           outlier             1Xn
-%           Psi(t)              1XnXM
-% Outputs: 
-%           S_bar(t)            4XM
+% this function calculates the weight for a given feature based on the
+% measurement likelihood.
 function weight = weight_feature(z,z_hat,Q_inv,Q)
 
 delta = z-z_hat;

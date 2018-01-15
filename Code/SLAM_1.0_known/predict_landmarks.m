@@ -1,3 +1,5 @@
+% this function predicts the location of the landmarks according to the
+% measurement model.
 %map_ids -- id's of the landmarks that were seen this time step
 % z = measurement for this time step
 function [S_bar] = predict_landmarks(S,Q_t,z,map_ids,num_landmarks,FIXED_POST_STATION)

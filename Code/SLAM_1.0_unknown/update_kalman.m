@@ -1,3 +1,5 @@
+% this function realizes the update step of the Kalman filter for each
+% feature
 function part_bar = update_kalman(particle,z,c,Q_t,old_number_features,t_in)
 num_mes = size(c,2);
 checked = zeros(1,old_number_features);

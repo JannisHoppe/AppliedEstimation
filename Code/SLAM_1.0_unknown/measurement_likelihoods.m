@@ -1,3 +1,5 @@
+% calculate the likelihoods of the measurements for a particle. The
+% formulas are according to the book.
 function weights = measurement_likelihoods(particle,z,Q_t)
     N = particle(5);
     M = size(z,2);

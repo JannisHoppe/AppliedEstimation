@@ -1,6 +1,6 @@
+% implementation of the measurement model for SLAM
 % S : 3xM
 % L : 2xM
-
 % h : 2xM
 function h = observation_model_slam(S,L)
     x = (L(1,:)-S(1,:));

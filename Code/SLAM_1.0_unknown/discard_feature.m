@@ -1,3 +1,6 @@
+%if the log odds of the feature existence falls below a certain threshold
+%(here <= 0) the feature is discarded and the memory management is adjusted
+%accordingly.
 function p_bar = discard_function(particle,p_idx)
     p_bar = particle;
     N = particle(5);

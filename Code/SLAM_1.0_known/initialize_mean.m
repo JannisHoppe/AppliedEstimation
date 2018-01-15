@@ -1,3 +1,4 @@
+% initialize mean robot position vector
 function [ mu ] = initialize_mean(z,x)
 
 theta_help = z(2)+x(3,:);

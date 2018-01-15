@@ -1,6 +1,6 @@
 function [ weights] = weight_particles( weights_in,post_seen)
-%WEIGHT_PARTICLES Summary of this function goes here
-%   Detailed explanation goes here
+% this function is not used anymore
+
 
 %particle weight without normalization
 if post_seen == 0

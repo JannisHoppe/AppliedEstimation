@@ -1,8 +1,9 @@
-% function runlocalization_track(simoutfile, mapfile,show_estimate,show_gth,show_odo,verbose)
-% This function is the entrance point to the code. 
-function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback)
+% runs the whole simulation for FAST SLAM 1.0 with known associations
+function run_SLAM_Stanford(simoutfile, mapfile,show_estimate,show_gth,start_pose,verbose,video_playback,known_post,VR_resampling)
 if nargin <7
     video_playback = 0; % Verbose = 0: no visual output, 1: estimates and groundtruth, 2: (1)+ covariance elipse
+    known_post = 1;
+    VR_resampling = 0;
 end
 help = 1;
 %% Loading the map file
@@ -47,7 +48,7 @@ end
 
 %%
 % Parameter Initialization
-[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION] = init(bound,start_pose,Map_IDS(end));
+[S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE] = init(bound,start_pose,Map_IDS(end),known_post,VR_resampling);
 %%
 % Code initialization
 % clc;
@@ -121,7 +122,7 @@ for v=1:endframe
         end
         z = [ranges';bearings'];
         known_associations = ids';
-        [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+        [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
 
         total_outliers = total_outliers + outliers;
         mu = mean(S(1:3,:),2);
@@ -219,7 +220,7 @@ while 1
     end
     z = [ranges';bearings'];
     known_associations = ids';
-    [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION);
+    [S,outliers] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,count,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE);
         
     total_outliers = total_outliers + outliers;
     mu = mean(S(1:3,:),2);

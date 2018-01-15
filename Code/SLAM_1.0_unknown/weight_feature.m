@@ -1,9 +1,5 @@
-% function S_bar = weight(S_bar,Psi,outlier)
-%           S_bar(t)            4XM
-%           outlier             1Xn
-%           Psi(t)              1XnXM
-% Outputs: 
-%           S_bar(t)            4XM
+% calculate the weight contribution of one feature for the given particle
+% according to the measurement likelihood.
 function weight = weight_feature(z,z_hat,Q_inv,Q)
 
 delta = z-z_hat;

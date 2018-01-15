@@ -1,6 +1,9 @@
 function [ feature_idx ] = distance_based_reassignment( particle,new_feature_pose,c,j )
-%DISTANCE_BASED_REASSIGNMENT Summary of this function goes here
-%   Detailed explanation goes here
+% this function is used after the data association in the update process.
+% The information is added, that any newly introduced feature cannot be
+% closer to an existent feature than min_dist. If a feature is about to be
+% introduced that violates this boundary, the data is matched to the
+% closest feature and this feature is updated instead (maybe twice).
 
 feature_idx = c(j);
 

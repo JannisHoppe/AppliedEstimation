@@ -16,17 +16,17 @@ for i = 1:num_mes
         new_feature_pose = initialize_mean(z(:,i),particle(1:3));
         feature_idx_new = distance_based_reassignment(particle,new_feature_pose,c,i);
         if feature_idx_new == feature_idx || old_number_features == 0
-        feature_idx = feature_idx - number_double_updates;
+            feature_idx = feature_idx - number_double_updates;
             part_bar(p_idx:p_idx+1) = new_feature_pose;
-        H = calculate_jacobian(particle(1:3),part_bar(p_idx:p_idx+1));
-        H = special_mat_reshape(H);
-        inv_H = H^-1;
-        A = inv_H * Q_t * inv_H';
-        part_bar(p_idx+2)= A(1);
-        part_bar(p_idx+3) = A(2);
-        part_bar(p_idx+4) = A(3);
-        part_bar(p_idx+5) = A(4);
-        part_bar(p_idx+6) = 1;
+            H = calculate_jacobian(particle(1:3),part_bar(p_idx:p_idx+1));
+            H = special_mat_reshape(H);
+            inv_H = H^-1;
+            A = inv_H * Q_t * inv_H';
+            part_bar(p_idx+2)= A(1);
+            part_bar(p_idx+3) = A(2);
+            part_bar(p_idx+4) = A(3);
+            part_bar(p_idx+5) = A(4);
+            part_bar(p_idx+6) = 1;
         else
             feature_idx = feature_idx_new;
             double_update = 1;
@@ -57,6 +57,7 @@ help =1;
 end
 
 % reevaluate features that have not been assigned
+discard = [];
 for i=1:old_number_features
     if(checked(i)==0)
         p_idx = 6 + (i-1)*7;
@@ -64,10 +65,14 @@ for i=1:old_number_features
         if(diff_range < 500)
             part_bar(p_idx+6) = particle(p_idx+6) - 1;
             if(part_bar(p_idx+6)<0)
-                part_bar = discard_feature(part_bar,p_idx);
+                discard = [discard p_idx];
+                %part_bar = discard_feature(part_bar,p_idx);
             end
         end
     end
+end
+if (size(discard)>0)
+    part_bar = discard_feature(part_bar,discard);
 end
 i = 1;
 while(part_bar(12 + (i-1)*7) >= 0)

@@ -1,12 +1,12 @@
 % function [S,outliers] = mcl(S,R,Q,z,known_associations,u,M,Lambda_psi,Map_IDS,delta_t,t)
 % This function should perform one iteration of the FAST SLAM 1.0 algorithm
 % without known associations.
-function [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE)
+function [S,current_weights] = SLAM(S,R,Q,z,known_associations,v,omega,Lambda_psi,Map_IDS,delta_t,t,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLE,dist_reassign_on)
 
 M = size(S,2);
 old_weights = S(4,:);
 S_bar_state = S(1:4,:);
-[S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t,VR_RESAMPLE);
+[S_bar_state] = predict_state(S_bar_state,v,omega,R,delta_t,VR_RESAMPLE,t);
 S_bar = [S_bar_state;S(5:end,:)];
 
 if USE_KNOWN_ASSOCIATIONS
@@ -21,9 +21,9 @@ else
         N_before = S_bar(5,particle);
         weights = measurement_likelihoods(S_bar(:,particle),z,Q);
         [N,c,weight] = associate_and_weight(weights,z,N_before,S_bar(:,particle));
-        S_bar(5,particle) = N;
+       % S_bar(5,particle) = N;
         weight_particles(1,particle) = weight;
-        S_bar(:,particle) = update_kalman(S_bar(:,particle),z,c,Q,N_before,t);       
+        S_bar(:,particle) = update_kalman(S_bar(:,particle),z,c,Q,N_before,t,dist_reassign_on);       
     end
     S_bar(4,:) = weight_particles./sum(weight_particles);
 end

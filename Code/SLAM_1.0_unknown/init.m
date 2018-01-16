@@ -1,10 +1,11 @@
 %initialize simulation 
-function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLING] = init(bound,start_pose,number_landmarks,known_post,VR_resampling)
+function [S,R,Q,Lambda_psi,USE_KNOWN_ASSOCIATIONS,RESAMPLE_MODE,FIXED_POST_STATION,VR_RESAMPLING,DIST_REASSIGN_ON] = init(bound,start_pose,number_landmarks,known_post,VR_resampling,dist_reassign_on)
 
 USE_KNOWN_ASSOCIATIONS = 0;
 RESAMPLE_MODE = 2; %0=no resampling, 1=Multinomial resampling, 2=Systematic Resampling
 FIXED_POST_STATION = known_post;
 VR_RESAMPLING = VR_resampling;
+DIST_REASSIGN_ON = dist_reassign_on;
 
 
 M = 1000;

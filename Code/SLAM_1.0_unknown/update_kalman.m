@@ -1,6 +1,6 @@
 % this function realizes the update step of the Kalman filter for each
 % feature
-function part_bar = update_kalman(particle,z,c,Q_t,old_number_features,t_in)
+function part_bar = update_kalman(particle,z,c,Q_t,old_number_features,t_in,dist_reassign_on)
 num_mes = size(c,2);
 checked = zeros(1,old_number_features);
 part_bar = particle;
@@ -14,9 +14,10 @@ for i = 1:num_mes
     double_update= 0;
     if feature_idx > old_number_features
         new_feature_pose = initialize_mean(z(:,i),particle(1:3));
-        feature_idx_new = distance_based_reassignment(particle,new_feature_pose,c,i);
+        feature_idx_new = distance_based_reassignment(particle,new_feature_pose,c,i,old_number_features,dist_reassign_on);
         if feature_idx_new == feature_idx || old_number_features == 0
             feature_idx = feature_idx - number_double_updates;
+            p_idx = 6+(feature_idx-1)*7;
             part_bar(p_idx:p_idx+1) = new_feature_pose;
             H = calculate_jacobian(particle(1:3),part_bar(p_idx:p_idx+1));
             H = special_mat_reshape(H);
@@ -29,6 +30,7 @@ for i = 1:num_mes
             part_bar(p_idx+6) = 1;
         else
             feature_idx = feature_idx_new;
+            p_idx = 6+(feature_idx-1)*7;
             double_update = 1;
             number_double_updates = number_double_updates +1;
         end
@@ -56,6 +58,12 @@ help =1;
 
 end
 
+for i=1:1:32
+   if part_bar(12 + (i-1)*7) >= 0
+    N_count = N_count+1;
+   end   
+end
+part_bar(5) = N_count;
 % reevaluate features that have not been assigned
 discard = [];
 for i=1:old_number_features
@@ -71,13 +79,7 @@ for i=1:old_number_features
         end
     end
 end
+
 if (size(discard)>0)
     part_bar = discard_feature(part_bar,discard);
-end
-i = 1;
-while(part_bar(12 + (i-1)*7) >= 0)
-    N_count = N_count+1;
-    i = i+1;
-end
-part_bar(5) = N_count;
 end

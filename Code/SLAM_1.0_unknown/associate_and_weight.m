@@ -20,7 +20,7 @@ counter_new_feature = -1*ones(1,num_measurements); % in order to adjust the asso
 weight = 1; % weight of this particle for resampling. 
 for counter = 1:1:num_measurements
     weight_help = [];
-    if max(weights(:,counter)) > 1e-7
+    if max(weights(:,counter)) > 1e-10
     weight_help = weights(:,counter)./sum(weights(:,counter)); %normalize, to see if one landmark is described significantly better then the others (relatively!!!!)% normieren könnte falsch sein
     else
     weight_help = weights(:,counter);
